@@ -1,0 +1,33 @@
+{
+    "name": "audio-project",
+    "version": "1.0.0",
+    "description": "https://github.com/MattyLake/Audio-Manipulator",
+    "main": "router.js",
+    "scripts": {
+        "start": "node router.js",
+        "build": "webpack"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MattyLake/Audio-Manipulator"
+    },
+    "keywords": [
+        "d3",
+        "wav"
+    ],
+    "author": "Matthew Lakin",
+    "license": "MIT",
+    "dependencies": {
+        "audio-project": "file:",
+        "d3": "^7.9.0",
+        "express": "^5.1.0",
+        "howler": "^2.2.4"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.28.0",
+        "@babel/preset-env": "^7.28.0",
+        "babel-loader": "^10.0.0",
+        "webpack": "^5.99.9",
+        "webpack-cli": "^6.0.1"
+    }
+}
