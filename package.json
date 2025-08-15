@@ -21,6 +21,7 @@
         "audio-project": "file:",
         "d3": "^7.9.0",
         "express": "^5.1.0",
+        "fft.js": "^4.0.4",
         "howler": "^2.2.4"
     },
     "devDependencies": {

@@ -2,6 +2,7 @@ import './index.css';
 
 import * as d3 from 'd3';
 import { Howl } from 'howler';
+import FFT from 'fft.js';
 
 // Get DOM elements
 const audioFile = document.getElementById('audioFile');
@@ -99,13 +100,16 @@ audioFile.addEventListener('change', (e) => {
         // Create a Blob from the ArrayBuffer and a URL for Howler.js
         const audioBlob = new Blob([event.target.result], { type: file.type });
         const audioUrl = URL.createObjectURL(audioBlob);
+        console.log("Audio URL created:", audioUrl);
 
         // Decode the audio data for visualization
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         audioContext.decodeAudioData(event.target.result.slice(0), (buffer) => {
             duration = buffer.duration;
             const channelData = buffer.getChannelData(0);
+            console.log("Decoded audio data:", channelData);
             drawWaveform(channelData);
+            analyzeAndDrawSpectrum(channelData); // Analyze and draw the FFT spectrum
 
             // Create a new Howl instance with the audio URL
             howl = new Howl({
@@ -143,3 +147,45 @@ playButton.addEventListener('click', () => {
         animationFrameId = requestAnimationFrame(updatePlaybackLine);
     }
 });
+
+function analyzeAndDrawSpectrum(data) {
+    const fftSize = 2^12; // 4096, adjust as needed for performance
+    const fft = new FFT(fftSize);
+    const svgFFT = d3.select("#fft");
+
+    const input = data.slice(0, fftSize);
+    const output = fft.createComplexArray();
+
+    fft.realTransform(output, input);
+    fft.completeSpectrum(output);
+
+    const magnitudes = new Float32Array(fftSize / 2);
+    for (let i = 0; i < fftSize / 2; i++) {
+        magnitudes[i] = Math.sqrt(output[2 * i] ** 2 + output[2 * i + 1] ** 2);
+    }
+    
+    svgFFT.selectAll("*").remove(); // Clear previous FFT visualization
+
+    // Define SVG dimensions for the FFT plot
+    const svgFFTWidth = +svgFFT.attr("width") || 800;
+    const svgFFTHeight = +svgFFT.attr("height") || 200;
+
+    const xScaleFFT = d3.scaleBand()
+        .domain(d3.range(magnitudes.length))
+        .range([0, svgFFTWidth])
+        .paddingInner(0.1);
+
+    const yScaleFFT = d3.scaleLinear()
+        .domain([0, d3.max(magnitudes)])
+        .range([svgFFTHeight, 0]);
+
+    // Draw bars
+    svgFFT.selectAll("rect")
+        .data(magnitudes)
+        .enter().append("rect")
+        .attr("x", (d, i) => xScaleFFT(i))
+        .attr("y", d => yScaleFFT(d))
+        .attr("width", xScaleFFT.bandwidth())
+        .attr("height", d => svgFFTHeight - yScaleFFT(d))
+        .attr("fill", "steelblue");
+}
