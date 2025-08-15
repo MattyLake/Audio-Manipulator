@@ -8,7 +8,7 @@ const dataPath = __dirname + '/data/';
 // const port = 8080;
 const port = process.env.PORT || 8080;
 
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use('/static', express.static(path.join(__dirname, 'dist', 'static')))
 
 app.use(function (req,res,next) {
     console.log('/' + req.method + ' ' + req.path);
