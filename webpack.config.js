@@ -56,7 +56,7 @@ module.exports = {
       template: path.resolve(__dirname, 'src', 'index.html'),
       // The output filename is now set to output to `dist/views/index.html`
       filename: '../../views/index.html',
-      inject: false,
+      inject: true,
     }),
   ],
 
