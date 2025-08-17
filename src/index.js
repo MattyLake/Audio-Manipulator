@@ -149,7 +149,7 @@ playButton.addEventListener('click', () => {
 });
 
 function analyzeAndDrawSpectrum(data) {
-    const fftSize = 2^12; // 4096, adjust as needed for performance
+    const fftSize = 2**14; // 4096, adjust as needed for performance
     const fft = new FFT(fftSize);
     const svgFFT = d3.select("#fft");
 
@@ -166,7 +166,7 @@ function analyzeAndDrawSpectrum(data) {
     
     svgFFT.selectAll("*").remove(); // Clear previous FFT visualization
 
-    // Define SVG dimensions for the FFT plot
+    // Correctly define SVG dimensions for the FFT plot
     const svgFFTWidth = +svgFFT.attr("width") || 800;
     const svgFFTHeight = +svgFFT.attr("height") || 200;
 
@@ -186,6 +186,6 @@ function analyzeAndDrawSpectrum(data) {
         .attr("x", (d, i) => xScaleFFT(i))
         .attr("y", d => yScaleFFT(d))
         .attr("width", xScaleFFT.bandwidth())
-        .attr("height", d => svgFFTHeight - yScaleFFT(d))
+        .attr("height", d => svgFFTHeight - yScaleFFT(d)) // Correct calculation
         .attr("fill", "steelblue");
 }

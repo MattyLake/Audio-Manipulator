@@ -1,5 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   // Use your existing entry point
@@ -48,11 +49,20 @@ module.exports = {
       // The output filename for the extracted CSS, relative to the output.path
       filename: '../styles/bundle.css',
     }),
+
+    // Add the HtmlWebpackPlugin to copy and inject files into your HTML
+    new HtmlWebpackPlugin({
+      // The template path now points to the src folder
+      template: path.resolve(__dirname, 'src', 'index.html'),
+      // The output filename is now set to output to `dist/views/index.html`
+      filename: '../../views/index.html',
+      inject: false,
+    }),
   ],
 
-  // devtool: 'source-map', // Helpful for debugging
-  // mode: 'development', // Change to 'production' for production builds
+  devtool: 'source-map', // Helpful for debugging
+  mode: 'development', // Change to 'production' for production builds
   // Use your existing mode and watch settings
-  mode: 'production',
+  // mode: 'production',
   watch: true,
 };
